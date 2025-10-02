@@ -1,12 +1,14 @@
 import React, { use } from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import AddUserForm from "./AddUserForm";
 function UsersList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -29,6 +31,26 @@ function UsersList() {
         user.company?.name?.toLowerCase().includes(input)
     );
     setFilteredUsers(filtered);
+  }
+
+  function handleAddUser(newUser) {
+    const userWithId = {
+      ...newUser,
+      id: Date.now(),
+      address: {
+        street: "",
+        suite: "",
+        city: "",
+        zipcode: "",
+      },
+      phone: "",
+      website: "",
+      company: {
+        name: newUser.company || "",
+      },
+    };
+    setUsers([userWithId, ...users]);
+    setShowAddForm(false);
   }
 
   function handleSearchChange(event) {
@@ -90,7 +112,29 @@ function UsersList() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
             />
           </div>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm"
+          >
+            {showAddForm ? "Cancel" : "Add New User"}
+          </button>
         </div>
+        {showAddForm && (
+          <div className="mb-6">
+            <AddUserForm
+              onAddUser={handleAddUser}
+              onCancel={() => setShowAddForm(false)}
+            />
+          </div>
+        )}
+        <div className="mb-4 text-gray-600">
+          Showing {filteredUsers.length} of {users.length} users
+        </div>
+         {filteredUsers.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-8 text-center">
+            <p className="text-gray-500 text-lg">No users found matching your search.</p>
+          </div>
+        ) :(
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -142,6 +186,7 @@ function UsersList() {
             </table>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
