@@ -25,7 +25,8 @@ function UsersList() {
     const filtered = users.filter(
       (user) =>
         user.name.toLowerCase().includes(input) ||
-        user.email.toLowerCase().includes(input)
+        user.email.toLowerCase().includes(input) ||
+        user.company?.name?.toLowerCase().includes(input)
     );
     setFilteredUsers(filtered);
   }

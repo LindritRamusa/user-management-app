@@ -4,8 +4,8 @@ import UserDetails from "./components/UserDetails.jsx";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={UsersList()} />
-      <Route path="/user/:id" element={UserDetails()} />
+      <Route path="/" element={<UsersList />} />
+      <Route path="/user/:id" element={<UserDetails />} />
     </Routes>
   );
 }
